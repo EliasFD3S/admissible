@@ -149,14 +149,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Calcul de la ligne de seuil (10/20)
-        // Formule : TAGE = 500 - (TOEIC/990) * 400
-        // Basée sur les points (0, 500) et (990, 100)
+        // Moyenne pondérée >= 10/20 = 0.5
+        // (TAGE/600 * 8 + TOEIC/990 * 12) / 20 >= 0.5
+        // TAGE/600 * 8 + TOEIC/990 * 12 >= 10
+        // TAGE >= (10 - TOEIC/990 * 12) * 600 / 8
+        // TAGE >= (10 - TOEIC/990 * 12) * 75
+        // TAGE >= 750 - TOEIC * 900/990
+        // TAGE >= 750 - TOEIC * 0.90909...
         const seuilPoints = [];
         const zoneAdmissibleHaut = [];
         const zoneAdmissibleBas = [];
         
         for (let t = 0; t <= 990; t += 5) {
-            const tagemageSeuil = Math.max(0, Math.min(600, 500 - (t / 990) * 400));
+            // Calcul du TAGE minimum requis pour être admissible
+            let tagemageSeuil = (10 - (t / 990) * 12) * 75;
+            // Limiter entre 0 et 600
+            tagemageSeuil = Math.max(0, Math.min(600, tagemageSeuil));
             seuilPoints.push({ x: t, y: tagemageSeuil });
             zoneAdmissibleHaut.push({ x: t, y: 600 });
             zoneAdmissibleBas.push({ x: t, y: tagemageSeuil });
