@@ -246,21 +246,6 @@ main {
     border: 1px solid #e0e0e0;
 }
 
-footer {
-    padding: 20px 30px;
-    background: #f8f9fa;
-    border-top: 2px solid #e0e0e0;
-    text-align: center;
-}
-
-.footer-disclaimer {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 400;
-    margin: 0;
-    line-height: 1.5;
-}
-
 @media (max-width: 600px) {
     header h1 {
         font-size: 2rem;
