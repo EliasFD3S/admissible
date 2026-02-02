@@ -42,6 +42,17 @@ header h1 {
     font-weight: 400;
 }
 
+.disclaimer {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 400;
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 main {
     padding: 40px 30px;
 }
@@ -233,6 +244,21 @@ main {
     background: white;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
+}
+
+footer {
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-top: 2px solid #e0e0e0;
+    text-align: center;
+}
+
+.footer-disclaimer {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.5;
 }
 
 @media (max-width: 600px) {
