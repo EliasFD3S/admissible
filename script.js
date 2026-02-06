@@ -45,8 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Vérification de l'admissibilité (seuil : 124)
         const seuilAdmissibilite2025 = 124;
         const seuilAdmissibilite2026 = 126;
+        const seuilAdmissibilite2026bis = 128;
         const estAdmissible2025 = scoreFinal >= seuilAdmissibilite2025;
         const estAdmissible2026 = scoreFinal >= seuilAdmissibilite2026;
+        const estAdmissible2026bis = scoreFInal >= seuilAdmissibilite2026bis;
 
         // Affichage du résultat
         finalScoreSpan.textContent = scoreFinal.toFixed(2);
@@ -67,6 +69,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </p>
             <p class="admissibilite ${estAdmissible2026 ? 'admissible' : 'non-admissible'}">
                 <strong>2026 (prévisionnel) : ${estAdmissible2026 ? '✓ Admissible' : '✗ Non admissible'}</strong> (seuil : ${seuilAdmissibilite2026})
+            </p>
+                        <p class="admissibilite ${estAdmissible2026bis ? 'admissible' : 'non-admissible'}">
+                <strong>2026 (prévisionnel) : ${estAdmissible2026bis ? '✓ Admissible' : '✗ Non admissible'}</strong> (seuil : ${seuilAdmissibilite2026bis})
             </p>
         `;
 
@@ -347,3 +352,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Afficher emlyon par défaut
     emlyonCalculator.style.display = 'block';
 });
+
