@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const seuilAdmissibilite2026bis = 128;
         const estAdmissible2025 = scoreFinal >= seuilAdmissibilite2025;
         const estAdmissible2026 = scoreFinal >= seuilAdmissibilite2026;
-        const estAdmissible2026bis = scoreFInal >= seuilAdmissibilite2026bis;
+        const estAdmissible2026bis = scoreFinal >= seuilAdmissibilite2026bis;
 
         // Affichage du résultat
         finalScoreSpan.textContent = scoreFinal.toFixed(2);
@@ -352,5 +352,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Afficher emlyon par défaut
     emlyonCalculator.style.display = 'block';
 });
+
 
 
