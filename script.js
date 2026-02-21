@@ -76,6 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
 
         resultDiv.style.display = 'block';
+        resultDivGrenoble.style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
     }
 
     // Fonction pour calculer le score Grenoble
@@ -141,7 +143,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Création/mise à jour du graphique
         updateChart(tagemage, toeic, estAdmissible);
 
+        resultDiv.style.display = 'none';
         resultDivGrenoble.style.display = 'block';
+        document.getElementById('result-section').style.display = 'block';
     }
 
     // Fonction pour créer/mettre à jour le graphique
@@ -235,24 +239,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: {
                         display: true,
                         text: 'Aire d\'admissibilité - Grenoble École de Management',
-                        font: {
-                            family: 'Lato',
-                            size: 16,
-                            weight: 'bold'
-                        },
-                        padding: {
-                            top: 10,
-                            bottom: 20
-                        }
+                        font: { family: 'Outfit', size: 16, weight: 'bold' },
+                        color: 'rgba(255,255,255,0.9)',
+                        padding: { top: 10, bottom: 20 }
                     },
                     legend: {
                         display: true,
                         position: 'bottom',
-                        labels: {
-                            font: {
-                                family: 'Lato'
-                            }
-                        }
+                        labels: { font: { family: 'Outfit' }, color: 'rgba(255,255,255,0.85)' }
                     },
                     tooltip: {
                         callbacks: {
@@ -271,60 +265,110 @@ document.addEventListener('DOMContentLoaded', function() {
                         title: {
                             display: true,
                             text: 'Score TOEIC (sur 990)',
-                            font: {
-                                family: 'Lato',
-                                size: 14,
-                                weight: 'bold'
-                            }
+                            font: { family: 'Outfit', size: 14, weight: 'bold' },
+                            color: 'rgba(255,255,255,0.85)'
                         },
                         min: 0,
                         max: 990,
-                        ticks: {
-                            stepSize: 100,
-                            font: {
-                                family: 'Lato'
-                            }
-                        }
+                        ticks: { stepSize: 100, font: { family: 'Outfit' }, color: 'rgba(255,255,255,0.7)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
                     },
                     y: {
                         type: 'linear',
                         title: {
                             display: true,
                             text: 'Score TAGE MAGE (sur 600)',
-                            font: {
-                                family: 'Lato',
-                                size: 14,
-                                weight: 'bold'
-                            }
+                            font: { family: 'Outfit', size: 14, weight: 'bold' },
+                            color: 'rgba(255,255,255,0.85)'
                         },
                         min: 0,
                         max: 600,
-                        ticks: {
-                            stepSize: 100,
-                            font: {
-                                family: 'Lato'
-                            }
-                        }
+                        ticks: { stepSize: 100, font: { family: 'Outfit' }, color: 'rgba(255,255,255,0.7)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
                     }
                 }
             }
         });
+        // Redimensionner le graphique une fois le conteneur visible (fix affichage)
+        setTimeout(function() {
+            if (chartInstance) chartInstance.resize();
+        }, 50);
     }
 
-    // Gestion du changement d'école
+    const homePage = document.getElementById('home-page');
+    const calculatorView = document.getElementById('calculator-view');
+    const pageTitle = document.getElementById('page-title');
+
+    function showHome() {
+        homePage.style.display = 'block';
+        calculatorView.style.display = 'none';
+        pageTitle.textContent = 'Accueil';
+        document.querySelectorAll('.nav-item').forEach(function(b) {
+            b.classList.remove('active');
+            if (b.getAttribute('data-page') === 'home') b.classList.add('active');
+        });
+    }
+
+    function showCalculator(school) {
+        homePage.style.display = 'none';
+        calculatorView.style.display = 'grid';
+        pageTitle.textContent = 'Tableau de bord';
+        schoolSelect.value = school;
+        schoolSelect.dispatchEvent(new Event('change'));
+        document.querySelectorAll('.nav-item').forEach(function(b) {
+            b.classList.remove('active');
+            if (b.getAttribute('data-school') === school) b.classList.add('active');
+        });
+    }
+
+    // Sidebar nav
+    document.querySelectorAll('.nav-item').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (this.getAttribute('data-page') === 'home') {
+                showHome();
+            } else {
+                showCalculator(this.getAttribute('data-school'));
+            }
+        });
+    });
+
+    // Cartes d'accueil : clic ouvre le calculateur
+    document.querySelectorAll('.home-card[data-goto]').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+            e.preventDefault();
+            showCalculator(this.getAttribute('data-goto'));
+        });
+    });
+
+    // Gestion du changement d'école (dans la vue calculateur)
+    const cardInfoEmlyon = document.getElementById('card-info-emlyon');
+    const cardInfoGem = document.getElementById('card-info-gem');
+    const resultSection = document.getElementById('result-section');
+
     schoolSelect.addEventListener('change', function() {
         const selectedSchool = schoolSelect.value;
-        
+        document.querySelectorAll('.nav-item').forEach(function(b) {
+            b.classList.toggle('active', b.getAttribute('data-school') === selectedSchool);
+        });
+        // Masquer et réinitialiser la carte résultat lors du changement d'école
+        if (resultSection) resultSection.style.display = 'none';
+        resultDiv.style.display = 'none';
+        resultDivGrenoble.style.display = 'none';
+        if (chartInstance) {
+            chartInstance.destroy();
+            chartInstance = null;
+        }
         if (selectedSchool === 'emlyon') {
             emlyonCalculator.style.display = 'block';
             grenobleCalculator.style.display = 'none';
-            if (chartInstance) {
-                chartInstance.destroy();
-                chartInstance = null;
-            }
+            if (cardInfoEmlyon) cardInfoEmlyon.style.display = 'block';
+            if (cardInfoGem) cardInfoGem.style.display = 'none';
         } else if (selectedSchool === 'grenoble') {
             emlyonCalculator.style.display = 'none';
             grenobleCalculator.style.display = 'block';
+            if (cardInfoEmlyon) cardInfoEmlyon.style.display = 'none';
+            if (cardInfoGem) cardInfoGem.style.display = 'block';
         }
     });
 
@@ -349,8 +393,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Afficher emlyon par défaut
-    emlyonCalculator.style.display = 'block';
+    // Page d'accueil par défaut
+    showHome();
 });
 
 

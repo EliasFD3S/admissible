@@ -3,81 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admissible?</title>
+    <title>Admissible? — Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Admissible?</h1>
-            <p class="subtitle">Vérifiez votre admissibilité aux grandes écoles de commerce</p>
-            <p class="disclaimer">⚠️ Les scores affichés sont des admissibilités théoriques et ne doivent en aucun cas constituer une garantie d'admissibilité.</p>
-        </header>
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
-        <main>
-            <div class="school-selector">
-                <label for="school">École :</label>
-                <select id="school" name="school">
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-header glass-card">
+                <h1 class="logo">Admissible?</h1>
+                <p class="tagline">Admissibilité grandes écoles</p>
+            </div>
+            <nav class="sidebar-nav">
+                <button type="button" class="nav-item nav-item-home active" data-page="home">
+                    <span class="nav-icon">⌂</span>
+                    Accueil
+                </button>
+                <div class="nav-label">Calculateur</div>
+                <button type="button" class="nav-item" data-page="calculator" data-school="emlyon">
+                    <img src="assets/emlyon.png" alt="emlyon" class="nav-logo">
+                    emlyon
+                </button>
+                <button type="button" class="nav-item" data-page="calculator" data-school="grenoble">
+                    <img src="assets/gem.png" alt="GEM" class="nav-logo">
+                    GEM
+                </button>
+            </nav>
+            <div class="sidebar-footer glass-card">
+                <p class="disclaimer" lang="fr">⚠️ Scores théoriques — ne constituent pas une garantie d'admissibilité.</p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar glass-card">
+                <h2 class="page-title" id="page-title">Tableau de bord</h2>
+                <select id="school" name="school" class="school-select-hidden" aria-label="École">
                     <option value="emlyon">emlyon Business School</option>
                     <option value="grenoble">Grenoble École de Management</option>
                 </select>
-            </div>
+            </header>
 
-            <div class="calculator" id="emlyon-calculator" style="display: none;">
-                <h2>emlyon Business School</h2>
-                
-                <div class="input-group">
-                    <label for="tagemage">Score TAGE MAGE (sur 600) :</label>
-                    <input type="number" id="tagemage" name="tagemage" min="0" max="600" step="0.01" placeholder="0-600">
+            <section class="home-page glass-card" id="home-page">
+                <div class="home-hero">
+                    <h2 class="home-title">Bienvenue sur Admissible?</h2>
+                    <p class="home-desc">Estimez votre admissibilité aux grandes écoles de commerce à partir de vos scores TAGE MAGE, dossier et TOEIC.</p>
                 </div>
-
-                <div class="input-group">
-                    <label for="dossier">Note de dossier (sur 20) :</label>
-                    <input type="number" id="dossier" name="dossier" min="0" max="20" step="0.01" placeholder="0-20">
+                <div class="home-cards">
+                    <a href="#" class="home-card glass-inner" data-goto="emlyon">
+                        <img src="assets/emlyon.png" alt="emlyon" class="home-card-logo">
+                        <h3>emlyon Business School</h3>
+                        <p>TAGE MAGE + note de dossier. Score sur 200, seuils 2025/2026.</p>
+                    </a>
+                    <a href="#" class="home-card glass-inner" data-goto="grenoble">
+                        <img src="assets/gem.png" alt="GEM" class="home-card-logo">
+                        <h3>Grenoble École de Management</h3>
+                        <p>TAGE MAGE + TOEIC. Moyenne pondérée sur 20, seuil 10/20.</p>
+                    </a>
                 </div>
+                <p class="home-disclaimer">⚠️ Les scores affichés sont des admissibilités théoriques et ne constituent pas une garantie d'admissibilité.</p>
+            </section>
 
-                <button id="calculate-btn" class="calculate-btn">Calculer</button>
-
-                <div class="result" id="result" style="display: none;">
-                    <h3>Résultat</h3>
-                    <div class="score-display">
-                        <span class="score-label">Score final :</span>
-                        <span class="score-value" id="final-score">-</span>
+            <div class="content-grid calculator-view" id="calculator-view" style="display: none;">
+                <section class="glass-card card-calculator">
+                    <div class="calculator" id="emlyon-calculator" style="display: none;">
+                        <h3 class="card-title">emlyon Business School</h3>
+                        <div class="input-group">
+                            <label for="tagemage">Score TAGE MAGE (sur 600)</label>
+                            <input type="number" id="tagemage" name="tagemage" min="0" max="600" step="0.01" placeholder="0–600">
+                        </div>
+                        <div class="input-group">
+                            <label for="dossier">Note de dossier (sur 20)</label>
+                            <input type="number" id="dossier" name="dossier" min="0" max="20" step="0.01" placeholder="0–20">
+                        </div>
+                        <button id="calculate-btn" class="calculate-btn">Calculer</button>
                     </div>
-                    <div class="details" id="details"></div>
-                </div>
-            </div>
 
-            <div class="calculator" id="grenoble-calculator" style="display: none;">
-                <h2>Grenoble École de Management</h2>
-                
-                <div class="input-group">
-                    <label for="tagemage-grenoble">Score TAGE MAGE (sur 600) :</label>
-                    <input type="number" id="tagemage-grenoble" name="tagemage-grenoble" min="0" max="600" step="0.01" placeholder="0-600">
-                </div>
-
-                <div class="input-group">
-                    <label for="toeic">Score TOEIC (sur 990) :</label>
-                    <input type="number" id="toeic" name="toeic" min="0" max="990" step="0.01" placeholder="0-990">
-                </div>
-
-                <button id="calculate-btn-grenoble" class="calculate-btn">Calculer</button>
-
-                <div class="result" id="result-grenoble" style="display: none;">
-                    <h3>Résultat</h3>
-                    <div class="score-display">
-                        <span class="score-label">Score final :</span>
-                        <span class="score-value" id="final-score-grenoble">-</span>
+                    <div class="calculator" id="grenoble-calculator" style="display: none;">
+                        <h3 class="card-title">Grenoble École de Management</h3>
+                        <div class="input-group">
+                            <label for="tagemage-grenoble">Score TAGE MAGE (sur 600)</label>
+                            <input type="number" id="tagemage-grenoble" name="tagemage-grenoble" min="0" max="600" step="0.01" placeholder="0–600">
+                        </div>
+                        <div class="input-group">
+                            <label for="toeic">Score TOEIC (sur 990)</label>
+                            <input type="number" id="toeic" name="toeic" min="0" max="990" step="0.01" placeholder="0–990">
+                        </div>
+                        <button id="calculate-btn-grenoble" class="calculate-btn">Calculer</button>
                     </div>
-                    <div class="details" id="details-grenoble"></div>
-                    <div class="chart-container">
-                        <canvas id="admissibility-chart"></canvas>
-                    </div>
+                </section>
+
+                <div class="card-info-wrap">
+                    <section class="glass-card card-info" id="card-info-emlyon" style="display: none;">
+                        <h3 class="card-title">Notes de dossier typiques</h3>
+                        <p class="card-info-intro">Référence des notes de dossier selon la formation d'origine (sur 20) :</p>
+                        <div class="table-wrap glass-inner">
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Formation</th>
+                                        <th>Note dossier typique</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Bachelor école privée</td><td>10,5 – 12,5</td></tr>
+                                    <tr><td>DCG</td><td>11,5 – 13,5</td></tr>
+                                    <tr><td>BUT / DUT</td><td>12,5 – 14</td></tr>
+                                    <tr><td>Licence fac classique</td><td>12,5 – 14</td></tr>
+                                    <tr><td>Master 1 universitaire</td><td>14 – 15</td></tr>
+                                    <tr><td>Parcours sélectif (double licence, magistère, DJCE)</td><td>15 – 18,5</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="card-info-note">Les fourchettes sont indicatives et peuvent varier selon les sessions.</p>
+                        <p class="card-info-intro card-info-toeic">Le TOEIC n'apporte pas de bonus au-delà d'un niveau C1 (950). Un malus est appliqué si le score est inférieur ; il n'est cependant pas possible de le déterminer précisément.</p>
+                    </section>
+                    <section class="glass-card card-info" id="card-info-gem" style="display: none;">
+                        <h3 class="card-title">Critères d'admissibilité</h3>
+                        <p class="card-info-intro">À Grenoble École de Management, l'admissibilité repose uniquement sur les épreuves écrites :</p>
+                        <ul class="info-list">
+                            <li><strong>Le dossier n'est pas pris en compte</strong> pour l'admissibilité. Seuls le TAGE MAGE et le TOEIC entrent dans le calcul du score.</li>
+                            <li>Une <strong>moyenne de 10/20</strong> (TAGE MAGE et TOEIC pondérés) permet d'être déclaré admissible.</li>
+                            <li>Coefficients : TAGE MAGE × 8, TOEIC × 12 (sur 20 au total).</li>
+                        </ul>
+                        <p class="card-info-note">Le dossier peut intervenir ensuite dans d'autres étapes du processus de sélection (entretiens, etc.).</p>
+                    </section>
                 </div>
+
+                <section class="glass-card card-result" id="result-section" style="display: none;">
+                    <h3 class="card-title">Résultat</h3>
+                    <div class="result" id="result" style="display: none;">
+                        <div class="score-display glass-inner">
+                            <span class="score-label">Score final</span>
+                            <span class="score-value" id="final-score">—</span>
+                        </div>
+                        <div class="details" id="details"></div>
+                    </div>
+                    <div class="result" id="result-grenoble" style="display: none;">
+                        <div class="score-display glass-inner">
+                            <span class="score-label">Score final</span>
+                            <span class="score-value" id="final-score-grenoble">—</span>
+                        </div>
+                        <div class="details" id="details-grenoble"></div>
+                        <div class="chart-container glass-inner">
+                            <canvas id="admissibility-chart"></canvas>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
     </div>
