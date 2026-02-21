@@ -199,7 +199,9 @@
                         </div>
                         <div class="details" id="details"></div>
                         <div class="chart-container glass-inner">
-                            <canvas id="admissibility-chart-emlyon"></canvas>
+                            <div class="chart-inner">
+                                <canvas id="admissibility-chart-emlyon"></canvas>
+                            </div>
                         </div>
                     </div>
                     <div class="result" id="result-grenoble" style="display: none;">
@@ -209,12 +211,23 @@
                         </div>
                         <div class="details" id="details-grenoble"></div>
                         <div class="chart-container glass-inner">
-                            <canvas id="admissibility-chart"></canvas>
+                            <div class="chart-inner">
+                                <canvas id="admissibility-chart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </section>
             </div>
         </main>
+    </div>
+
+    <!-- Popup custom -->
+    <div class="popup-overlay" id="popup-overlay" aria-hidden="true">
+        <div class="popup-box glass-card" role="alertdialog" aria-modal="true" aria-labelledby="popup-title">
+            <div class="popup-icon" id="popup-icon">⚠️</div>
+            <p class="popup-title" id="popup-title"></p>
+            <button class="popup-btn" id="popup-close">OK</button>
+        </div>
     </div>
 
     <script src="script.js"></script>

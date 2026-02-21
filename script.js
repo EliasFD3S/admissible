@@ -1,4 +1,32 @@
 document.addEventListener('DOMContentLoaded', function() {
+
+    // ===== Popup custom =====
+    const popupOverlay = document.getElementById('popup-overlay');
+    const popupTitle   = document.getElementById('popup-title');
+    const popupIcon    = document.getElementById('popup-icon');
+    const popupClose   = document.getElementById('popup-close');
+
+    function showPopup(message, icon) {
+        popupTitle.textContent = message;
+        popupIcon.textContent  = icon || '⚠️';
+        popupOverlay.setAttribute('aria-hidden', 'false');
+        popupOverlay.classList.add('active');
+        popupClose.focus();
+    }
+
+    function closePopup() {
+        popupOverlay.classList.remove('active');
+        popupOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    if (popupClose) popupClose.addEventListener('click', closePopup);
+    if (popupOverlay) popupOverlay.addEventListener('click', function(e) {
+        if (e.target === popupOverlay) closePopup();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closePopup();
+    });
+
     const schoolSelect = document.getElementById('school');
     const calculateBtn = document.getElementById('calculate-btn');
     const calculateBtnGrenoble = document.getElementById('calculate-btn-grenoble');
@@ -25,17 +53,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validation
         if (isNaN(tagemage) || isNaN(dossier)) {
-            alert('Veuillez remplir tous les champs avec des valeurs numériques valides.');
+            showPopup('Veuillez remplir tous les champs avec des valeurs numériques valides.');
             return;
         }
 
         if (tagemage < 0 || tagemage > 600) {
-            alert('Le score TAGE MAGE doit être entre 0 et 600.');
+            showPopup('Le score TAGE MAGE doit être entre 0 et 600.');
             return;
         }
 
         if (dossier < 0 || dossier > 20) {
-            alert('La note de dossier doit être entre 0 et 20.');
+            showPopup('La note de dossier doit être entre 0 et 20.');
             return;
         }
 
@@ -141,8 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 1.5,
+                maintainAspectRatio: false,
                 interaction: { intersect: false, mode: 'index' },
                 plugins: {
                     title: {
@@ -214,17 +241,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validation
         if (isNaN(tagemage) || isNaN(toeic)) {
-            alert('Veuillez remplir tous les champs avec des valeurs numériques valides.');
+            showPopup('Veuillez remplir tous les champs avec des valeurs numériques valides.');
             return;
         }
 
         if (tagemage < 0 || tagemage > 600) {
-            alert('Le score TAGE MAGE doit être entre 0 et 600.');
+            showPopup('Le score TAGE MAGE doit être entre 0 et 600.');
             return;
         }
 
         if (toeic < 0 || toeic > 990) {
-            alert('Le score TOEIC doit être entre 0 et 990.');
+            showPopup('Le score TOEIC doit être entre 0 et 990.');
             return;
         }
 
@@ -352,8 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 1.5,
+                maintainAspectRatio: false,
                 interaction: {
                     intersect: false,
                     mode: 'index'
