@@ -374,17 +374,76 @@ body {
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    align-items: start;
+    grid-template-rows: minmax(0, min(55vh, 420px)) auto;
+    gap: 16px;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
 }
 
 .card-calculator {
     grid-column: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-calculator .calculator {
+    overflow-y: auto;
+    min-height: 0;
+    flex: 1;
 }
 
 .card-info-wrap {
     min-width: 0;
     grid-column: 2;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-info-wrap {
+    position: relative;
+}
+
+.card-info-wrap .card-info {
+    overflow-y: auto;
+    min-height: 0;
+    flex: 1;
+    display: block;
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 0 8px;
+    text-align: center;
+    pointer-events: none;
+    background: linear-gradient(to top, rgba(15, 15, 35, 0.85) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.25s;
+    z-index: 2;
+}
+
+.scroll-hint.visible {
+    opacity: 1;
+}
+
+.scroll-hint-icon {
+    display: inline-block;
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    animation: scroll-hint-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes scroll-hint-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
 }
 
 .calculator-view .card-result {
@@ -395,37 +454,43 @@ body {
 @media (max-width: 900px) {
     .content-grid {
         grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
     }
     .card-info-wrap {
         grid-column: 1;
+        max-height: none;
+    }
+    .card-info-wrap .card-info {
+        max-height: none;
     }
 }
 
 /* ========== Card info (à droite du calculateur) ========== */
 .card-info {
-    padding: 24px;
+    padding: 18px 20px;
 }
 
 .card-info .card-title {
-    margin-bottom: 14px;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
 }
 
 .card-info-intro {
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
-    line-height: 1.55;
-    margin-bottom: 16px;
+    line-height: 1.45;
+    margin-bottom: 12px;
 }
 
 .info-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.88rem;
+    font-size: 0.82rem;
 }
 
 .info-table th,
 .info-table td {
-    padding: 10px 12px;
+    padding: 6px 10px;
     text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -446,20 +511,20 @@ body {
 .table-wrap {
     padding: 4px;
     border-radius: var(--radius-sm);
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     overflow-x: auto;
 }
 
 .info-list {
-    margin: 0 0 16px;
-    padding-left: 1.25rem;
+    margin: 0 0 12px;
+    padding-left: 1.2rem;
     color: var(--text-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.82rem;
+    line-height: 1.5;
 }
 
 .info-list li {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .info-list li:last-child {
@@ -467,21 +532,84 @@ body {
 }
 
 .card-info-note {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
     opacity: 0.9;
-    line-height: 1.45;
+    line-height: 1.4;
 }
 
 .card-info-toeic {
-    margin-top: 14px;
-    padding-top: 14px;
+    margin-top: 10px;
+    padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-info-block {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.card-info-subtitle {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.seuil-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    border-radius: var(--radius-sm);
+}
+
+.seuil-control input[type="range"] {
+    flex: 1;
+    min-width: 0;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    outline: none;
+}
+
+.seuil-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--liquid-4);
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.seuil-control input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--liquid-4);
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.seuil-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    min-width: 2.5ch;
+    text-align: right;
 }
 
 /* ========== Calculator card ========== */
 .card-calculator {
-    padding: 28px;
+    padding: 20px;
 }
 
 .card-title {

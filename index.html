@@ -74,6 +74,9 @@
 
             <div class="content-grid calculator-view" id="calculator-view" style="display: none;">
                 <section class="glass-card card-calculator">
+                    <div class="scroll-hint scroll-hint-calc" id="scroll-hint-calc" aria-hidden="true">
+                        <span class="scroll-hint-icon" aria-label="Défiler pour voir la suite">↓</span>
+                    </div>
                     <div class="calculator" id="emlyon-calculator" style="display: none;">
                         <h3 class="card-title">emlyon Business School</h3>
                         <div class="input-group">
@@ -102,6 +105,9 @@
                 </section>
 
                 <div class="card-info-wrap">
+                    <div class="scroll-hint" id="scroll-hint-info" aria-hidden="true">
+                        <span class="scroll-hint-icon" aria-label="Défiler pour voir la suite">↓</span>
+                    </div>
                     <section class="glass-card card-info" id="card-info-emlyon" style="display: none;">
                         <h3 class="card-title">Notes de dossier typiques</h3>
                         <p class="card-info-intro">Référence des notes de dossier selon la formation d'origine (sur 20) :</p>
@@ -125,6 +131,25 @@
                         </div>
                         <p class="card-info-note">Les fourchettes sont indicatives et peuvent varier selon les sessions.</p>
                         <p class="card-info-intro card-info-toeic">Le TOEIC n'apporte pas de bonus au-delà d'un niveau C1 (950). Un malus est appliqué si le score est inférieur ; il n'est cependant pas possible de le déterminer précisément.</p>
+                        <div class="card-info-block">
+                            <h4 class="card-info-subtitle">Score minimal TAGE MAGE selon la note de dossier</h4>
+                            <p class="card-info-intro">Seuil d'admissibilité (score minimal) :</p>
+                            <div class="seuil-control glass-inner">
+                                <input type="range" id="emlyon-seuil-slider" min="120" max="132" step="1" value="124" aria-label="Seuil d'admissibilité">
+                                <span class="seuil-value" id="emlyon-seuil-value">124</span>
+                            </div>
+                            <div class="table-wrap glass-inner">
+                                <table class="info-table" id="emlyon-tagemage-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Note dossier (sur 20)</th>
+                                            <th>TAGE MAGE min. (sur 600)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="emlyon-tagemage-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </section>
                     <section class="glass-card card-info" id="card-info-gem" style="display: none;">
                         <h3 class="card-title">Critères d'admissibilité</h3>
@@ -135,6 +160,30 @@
                             <li>Coefficients : TAGE MAGE × 8, TOEIC × 12 (sur 20 au total).</li>
                         </ul>
                         <p class="card-info-note">Le dossier peut intervenir ensuite dans d'autres étapes du processus de sélection (entretiens, etc.).</p>
+                        <div class="card-info-block">
+                            <h4 class="card-info-subtitle">Combinaisons minimales (seuil 10/20)</h4>
+                            <p class="card-info-intro">Scores les plus bas possibles pour être admissible — TOEIC minimum pour un TAGE donné :</p>
+                            <div class="table-wrap glass-inner">
+                                <table class="info-table">
+                                    <thead>
+                                        <tr>
+                                            <th>TAGE MAGE (sur 600)</th>
+                                            <th>TOEIC min. (sur 990)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>600</td><td>165</td></tr>
+                                        <tr><td>500</td><td>263</td></tr>
+                                        <tr><td>400</td><td>361</td></tr>
+                                        <tr><td>300</td><td>459</td></tr>
+                                        <tr><td>200</td><td>557</td></tr>
+                                        <tr><td>100</td><td>655</td></tr>
+                                        <tr><td>0</td><td>825</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="card-info-note">Frontière d'admissibilité. (TAGE/600)×8 + (TOEIC/990)×12 = 10.</p>
+                        </div>
                     </section>
                 </div>
 

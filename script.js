@@ -393,6 +393,69 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // emlyon : tableau TAGE min selon note de dossier + seuil ajustable
+    const emlyonSeuilSlider = document.getElementById('emlyon-seuil-slider');
+    const emlyonSeuilValue = document.getElementById('emlyon-seuil-value');
+    const emlyonTagemageTbody = document.getElementById('emlyon-tagemage-tbody');
+
+    function updateEmlyonTagemageTable() {
+        if (!emlyonTagemageTbody) return;
+        const seuil = parseInt(emlyonSeuilSlider ? emlyonSeuilSlider.value : 124, 10);
+        if (emlyonSeuilValue) emlyonSeuilValue.textContent = seuil;
+        var rows = '';
+        for (var d = 8; d <= 20; d++) {
+            var tagemageMin = (seuil - 6 * d) * 7.5;
+            if (tagemageMin < 0) tagemageMin = 0;
+            if (tagemageMin > 600) tagemageMin = 600;
+            tagemageMin = Math.ceil(tagemageMin);
+            rows += '<tr><td>' + d + '</td><td>' + tagemageMin + '</td></tr>';
+        }
+        emlyonTagemageTbody.innerHTML = rows;
+    }
+
+    if (emlyonSeuilSlider) {
+        emlyonSeuilSlider.addEventListener('input', updateEmlyonTagemageTable);
+    }
+    updateEmlyonTagemageTable();
+
+    // Icône "défiler" : afficher quand le contenu est scrollable, masquer en bas de scroll
+    const scrollHintCalc = document.getElementById('scroll-hint-calc');
+    const scrollHintInfo = document.getElementById('scroll-hint-info');
+
+    function updateScrollHint(scrollEl, hintEl) {
+        if (!scrollEl || !hintEl) return;
+        var canScroll = scrollEl.scrollHeight > scrollEl.clientHeight;
+        var atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 8;
+        hintEl.classList.toggle('visible', canScroll && !atBottom);
+        hintEl.setAttribute('aria-hidden', !(canScroll && !atBottom));
+    }
+
+    function updateAllScrollHints() {
+        var calcEl = schoolSelect.value === 'emlyon' ? emlyonCalculator : grenobleCalculator;
+        var infoEl = schoolSelect.value === 'emlyon' ? cardInfoEmlyon : cardInfoGem;
+        if (calcEl && scrollHintCalc) updateScrollHint(calcEl, scrollHintCalc);
+        if (infoEl && scrollHintInfo) updateScrollHint(infoEl, scrollHintInfo);
+    }
+
+    function setupScrollListeners() {
+        var calcEl = schoolSelect.value === 'emlyon' ? emlyonCalculator : grenobleCalculator;
+        var infoEl = schoolSelect.value === 'emlyon' ? cardInfoEmlyon : cardInfoGem;
+        function onScroll() { updateAllScrollHints(); }
+        if (calcEl) { calcEl.removeEventListener('scroll', onScroll); calcEl.addEventListener('scroll', onScroll); }
+        if (infoEl) { infoEl.removeEventListener('scroll', onScroll); infoEl.addEventListener('scroll', onScroll); }
+        updateAllScrollHints();
+    }
+
+    if (scrollHintCalc && scrollHintInfo) {
+        setupScrollListeners();
+        window.addEventListener('resize', function() {
+            setTimeout(updateAllScrollHints, 100);
+        });
+        schoolSelect.addEventListener('change', function() {
+            setTimeout(setupScrollListeners, 50);
+        });
+    }
+
     // Page d'accueil par défaut
     showHome();
 });
