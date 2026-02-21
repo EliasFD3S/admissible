@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const grenobleCalculator = document.getElementById('grenoble-calculator');
     
     let chartInstance = null;
+    let chartInstanceEmlyon = null;
 
     // Fonction pour calculer le score emlyon
     function calculateEmlyon() {
@@ -39,45 +40,167 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Formule : TAGE/600 * 4 * 20 + Dossier * 6
-        // Simplifié : (TAGE * 80) / 600 + Dossier * 6
         const scoreFinal = (tagemage / 600) * 4 * 20 + dossier * 6;
 
-        // Vérification de l'admissibilité (seuil : 124)
-        const seuilAdmissibilite2025 = 124;
-        const seuilAdmissibilite2026 = 126;
-        const seuilAdmissibilite2026bis = 128;
-        const estAdmissible2025 = scoreFinal >= seuilAdmissibilite2025;
-        const estAdmissible2026 = scoreFinal >= seuilAdmissibilite2026;
-        const estAdmissible2026bis = scoreFinal >= seuilAdmissibilite2026bis;
+        var seuilSlider = document.getElementById('emlyon-seuil-slider');
+        var seuil = seuilSlider ? parseInt(seuilSlider.value, 10) : 124;
+        var estAdmissible = scoreFinal >= seuil;
 
         // Affichage du résultat
         finalScoreSpan.textContent = scoreFinal.toFixed(2);
-        
-        // Style pour l'admissibilité
-        finalScoreSpan.className = estAdmissible2025 ? 'score-value admissible' : 'score-value non-admissible';
-        
-        // Calculs pour l'affichage détaillé
-        const contributionTagemage = (tagemage / 600) * 4 * 20;
-        const contributionDossier = dossier * 6;
-        
+        finalScoreSpan.className = estAdmissible ? 'score-value admissible' : 'score-value non-admissible';
+
+        var contributionTagemage = (tagemage / 600) * 4 * 20;
+        var contributionDossier = dossier * 6;
+
         detailsDiv.innerHTML = `
             <p><strong>TAGE MAGE :</strong> ${tagemage}/600 × 4 × 20 = ${contributionTagemage.toFixed(2)}</p>
             <p><strong>Dossier :</strong> ${dossier}/20 × 6 = ${contributionDossier.toFixed(2)}</p>
             <p><strong>Score final :</strong> ${scoreFinal.toFixed(2)}</p>
-            <p class="admissibilite ${estAdmissible2025 ? 'admissible' : 'non-admissible'}">
-                <strong>2025 : ${estAdmissible2025 ? '✓ Admissible' : '✗ Non admissible'}</strong> (seuil : ${seuilAdmissibilite2025})
-            </p>
-            <p class="admissibilite ${estAdmissible2026 ? 'admissible' : 'non-admissible'}">
-                <strong>2026 (prévisionnel) : ${estAdmissible2026 ? '✓ Admissible' : '✗ Non admissible'}</strong> (seuil : ${seuilAdmissibilite2026})
-            </p>
-                        <p class="admissibilite ${estAdmissible2026bis ? 'admissible' : 'non-admissible'}">
-                <strong>2026 (prévisionnel) : ${estAdmissible2026bis ? '✓ Admissible' : '✗ Non admissible'}</strong> (seuil : ${seuilAdmissibilite2026bis})
+            <p class="admissibilite ${estAdmissible ? 'admissible' : 'non-admissible'}">
+                <strong>${estAdmissible ? '✓ Admissible' : '✗ Non admissible'}</strong> (seuil choisi : ${seuil})
             </p>
         `;
 
         resultDiv.style.display = 'block';
         resultDivGrenoble.style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
+
+        updateChartEmlyon(tagemage, dossier, seuil, estAdmissible);
+    }
+
+    // Graphique emlyon : frontière TAGE min = f(dossier) pour un seuil donné
+    function updateChartEmlyon(tagemage, dossier, seuil, estAdmissible) {
+        var canvas = document.getElementById('admissibility-chart-emlyon');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        if (chartInstanceEmlyon) {
+            chartInstanceEmlyon.destroy();
+            chartInstanceEmlyon = null;
+        }
+
+        var seuilPoints = [];
+        var zoneAdmissibleBas = [];
+        var zoneAdmissibleHaut = [];
+        for (var d = 8; d <= 20; d += 0.25) {
+            var tagemageMin = (seuil - 6 * d) * 7.5;
+            if (tagemageMin < 0) tagemageMin = 0;
+            if (tagemageMin > 600) tagemageMin = 600;
+            seuilPoints.push({ x: d, y: tagemageMin });
+            zoneAdmissibleBas.push({ x: d, y: tagemageMin });
+            zoneAdmissibleHaut.push({ x: d, y: 600 });
+        }
+
+        chartInstanceEmlyon = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'Zone non admissible',
+                        data: zoneAdmissibleBas,
+                        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+                        borderColor: 'transparent',
+                        pointRadius: 0,
+                        fill: 'origin',
+                        tension: 0,
+                        order: 0
+                    },
+                    {
+                        label: 'Zone admissible',
+                        data: zoneAdmissibleHaut,
+                        backgroundColor: 'rgba(40, 167, 69, 0.3)',
+                        borderColor: 'transparent',
+                        pointRadius: 0,
+                        fill: '-1',
+                        tension: 0,
+                        order: 1
+                    },
+                    {
+                        label: 'Seuil ' + seuil,
+                        data: seuilPoints,
+                        borderColor: '#c084fc',
+                        backgroundColor: 'transparent',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: false,
+                        tension: 0,
+                        order: 2
+                    },
+                    {
+                        label: 'Votre score',
+                        data: [{ x: dossier, y: tagemage }],
+                        type: 'scatter',
+                        backgroundColor: estAdmissible ? '#28a745' : '#dc3545',
+                        borderColor: estAdmissible ? '#155724' : '#721c24',
+                        pointRadius: 8,
+                        pointHoverRadius: 10,
+                        borderWidth: 2,
+                        order: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 1.5,
+                interaction: { intersect: false, mode: 'index' },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Aire d\'admissibilité - emlyon Business School (seuil ' + seuil + ')',
+                        font: { family: 'Outfit', size: 16, weight: 'bold' },
+                        color: 'rgba(255,255,255,0.9)',
+                        padding: { top: 10, bottom: 20 }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: { font: { family: 'Outfit' }, color: 'rgba(255,255,255,0.85)' }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (context.datasetIndex === 3) {
+                                    return 'Dossier: ' + context.parsed.x.toFixed(2) + '/20, TAGE MAGE: ' + context.parsed.y.toFixed(0) + '/600';
+                                }
+                                return '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Note de dossier (sur 20)',
+                            font: { family: 'Outfit', size: 14, weight: 'bold' },
+                            color: 'rgba(255,255,255,0.85)'
+                        },
+                        min: 8,
+                        max: 20,
+                        ticks: { stepSize: 2, font: { family: 'Outfit' }, color: 'rgba(255,255,255,0.7)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        type: 'linear',
+                        title: {
+                            display: true,
+                            text: 'Score TAGE MAGE (sur 600)',
+                            font: { family: 'Outfit', size: 14, weight: 'bold' },
+                            color: 'rgba(255,255,255,0.85)'
+                        },
+                        min: 0,
+                        max: 600,
+                        ticks: { stepSize: 100, font: { family: 'Outfit' }, color: 'rgba(255,255,255,0.7)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                }
+            }
+        });
+        setTimeout(function() {
+            if (chartInstanceEmlyon) chartInstanceEmlyon.resize();
+        }, 50);
     }
 
     // Fonction pour calculer le score Grenoble
@@ -358,6 +481,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (chartInstance) {
             chartInstance.destroy();
             chartInstance = null;
+        }
+        if (chartInstanceEmlyon) {
+            chartInstanceEmlyon.destroy();
+            chartInstanceEmlyon = null;
         }
         if (selectedSchool === 'emlyon') {
             emlyonCalculator.style.display = 'block';

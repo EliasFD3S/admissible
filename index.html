@@ -87,6 +87,13 @@
                             <label for="dossier">Note de dossier (sur 20)</label>
                             <input type="number" id="dossier" name="dossier" min="0" max="20" step="0.01" placeholder="0–20">
                         </div>
+                        <div class="input-group seuil-calculator">
+                            <label for="emlyon-seuil-slider">Seuil d'admissibilité (score minimal)</label>
+                            <div class="seuil-control glass-inner">
+                                <input type="range" id="emlyon-seuil-slider" min="120" max="132" step="1" value="124" aria-label="Seuil d'admissibilité">
+                                <span class="seuil-value" id="emlyon-seuil-value">124</span>
+                            </div>
+                        </div>
                         <button id="calculate-btn" class="calculate-btn">Calculer</button>
                     </div>
 
@@ -133,11 +140,7 @@
                         <p class="card-info-intro card-info-toeic">Le TOEIC n'apporte pas de bonus au-delà d'un niveau C1 (950). Un malus est appliqué si le score est inférieur ; il n'est cependant pas possible de le déterminer précisément.</p>
                         <div class="card-info-block">
                             <h4 class="card-info-subtitle">Score minimal TAGE MAGE selon la note de dossier</h4>
-                            <p class="card-info-intro">Seuil d'admissibilité (score minimal) :</p>
-                            <div class="seuil-control glass-inner">
-                                <input type="range" id="emlyon-seuil-slider" min="120" max="132" step="1" value="124" aria-label="Seuil d'admissibilité">
-                                <span class="seuil-value" id="emlyon-seuil-value">124</span>
-                            </div>
+                            <p class="card-info-intro">Tableau pour le seuil choisi dans le calculateur (à gauche) :</p>
                             <div class="table-wrap glass-inner">
                                 <table class="info-table" id="emlyon-tagemage-table">
                                     <thead>
@@ -195,6 +198,9 @@
                             <span class="score-value" id="final-score">—</span>
                         </div>
                         <div class="details" id="details"></div>
+                        <div class="chart-container glass-inner">
+                            <canvas id="admissibility-chart-emlyon"></canvas>
+                        </div>
                     </div>
                     <div class="result" id="result-grenoble" style="display: none;">
                         <div class="score-display glass-inner">
@@ -214,4 +220,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
